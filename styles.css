@@ -123,6 +123,10 @@ h1 {
   background: #fff0a8;
 }
 
+.magic-pill {
+  background: #e6dcff;
+}
+
 .activity-tabs {
   position: relative;
   z-index: 2;
@@ -304,6 +308,39 @@ h1 {
   text-align: center;
 }
 
+.mission-card {
+  display: grid;
+  gap: 6px;
+  width: min(100%, 360px);
+  padding: 10px 13px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255, 240, 168, 0.96), rgba(231, 248, 255, 0.96));
+  box-shadow: 0 8px 0 var(--shadow);
+  font-size: clamp(0.88rem, 1.6vw, 1.06rem);
+  font-weight: 900;
+  text-align: center;
+}
+
+.mission-card strong {
+  color: #83500f;
+}
+
+.magic-bar {
+  height: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 0 0 2px rgba(82, 48, 18, 0.08);
+}
+
+.magic-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ff7aa7, #ffe27a, #7adff2);
+  transition: width 260ms ease;
+}
+
 .play-panel {
   display: grid;
   align-content: start;
@@ -335,6 +372,66 @@ h1 {
   padding: 16px;
   border-radius: 26px;
   overflow: hidden;
+}
+
+.bubble-buddy {
+  position: absolute;
+  z-index: 3;
+  right: 18px;
+  top: 16px;
+  display: block;
+  width: 82px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.92) 0 13%, transparent 14%),
+    radial-gradient(circle at 62% 70%, rgba(255, 255, 255, 0.48) 0 18%, transparent 19%),
+    rgba(126, 225, 246, 0.86);
+  border: 5px solid rgba(255, 255, 255, 0.82);
+  box-shadow: 0 8px 0 var(--shadow), inset -8px -12px 0 rgba(55, 161, 190, 0.18);
+  animation: buddyFloat 2.4s ease-in-out infinite;
+}
+
+.bubble-buddy.excited {
+  animation: buddyPop 620ms ease-out, buddyFloat 2.4s ease-in-out infinite 620ms;
+}
+
+.buddy-eye {
+  position: absolute;
+  top: 40%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #28364a;
+}
+
+.buddy-eye.left {
+  left: 32%;
+}
+
+.buddy-eye.right {
+  right: 32%;
+}
+
+.buddy-smile {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  width: 30%;
+  height: 18%;
+  transform: translateX(-50%);
+  border-bottom: 4px solid #28364a;
+  border-radius: 50%;
+}
+
+.buddy-shine {
+  position: absolute;
+  left: 20%;
+  top: 19%;
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
 }
 
 .bathroom-scene {
@@ -566,6 +663,20 @@ h1 {
 .timer-button:hover,
 .action-button:hover {
   transform: translateY(-2px);
+}
+
+.action-button.surprise {
+  background: linear-gradient(135deg, #fff0a8, #ffd8e8);
+}
+
+.game.party .bathroom-scene {
+  animation: roomParty 700ms ease-out;
+}
+
+.game.party .bubble.one,
+.game.party .bubble.two,
+.game.party .bubble.three {
+  background: rgba(255, 240, 168, 0.72);
 }
 
 .icon {
@@ -814,6 +925,20 @@ h1 {
   50% { transform: translateY(-18px) translateX(12px); }
 }
 
+@keyframes buddyFloat {
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+@keyframes buddyPop {
+  35% { transform: scale(1.18) rotate(-8deg); }
+  70% { transform: scale(0.94) rotate(4deg); }
+}
+
+@keyframes roomParty {
+  25% { filter: saturate(1.35); transform: rotate(0.5deg); }
+  55% { filter: saturate(1.15); transform: rotate(-0.5deg); }
+}
+
 @keyframes breathe {
   50% { transform: scale(1.02); }
 }
@@ -945,6 +1070,17 @@ h1 {
     font-size: 0.88rem;
   }
 
+  .mission-card {
+    gap: 4px;
+    padding: 7px 9px;
+    border-radius: 16px;
+    font-size: 0.78rem;
+  }
+
+  .magic-bar {
+    height: 10px;
+  }
+
   .play-panel {
     gap: 8px;
     padding: 10px;
@@ -963,6 +1099,13 @@ h1 {
     min-height: 268px;
     padding: 9px;
     border-radius: 20px;
+  }
+
+  .bubble-buddy {
+    width: 58px;
+    right: 10px;
+    top: 9px;
+    border-width: 4px;
   }
 
   .bathroom-scene {
@@ -1110,6 +1253,14 @@ h1 {
   .kid {
     width: min(76vw, 260px);
     min-width: 210px;
+  }
+  .mission-card {
+    font-size: 0.86rem;
+  }
+  .bubble-buddy {
+    width: 58px;
+    right: 8px;
+    top: 8px;
   }
   .scene-card { min-height: 300px; padding: 10px; }
   .bathroom-scene { min-height: 270px; }

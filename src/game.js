@@ -87,6 +87,24 @@ const PRAISE = [
   "You can try again anytime!",
 ];
 
+const MISSIONS = [
+  "Wake up the bubbly bathroom!",
+  "Help the commode make a funny swirl!",
+  "Find the clean helper tools!",
+  "Make soap bubbles dance!",
+  "Turn shower rain into sparkle rain!",
+  "Earn a brave big-kid badge!",
+];
+
+const BUDDY_LINES = [
+  "Bubble Buddy says: pop-pop, clean is fun!",
+  "Tiny bubbles are cheering for Sidra!",
+  "The bathroom is waking up!",
+  "Flush swirl coming soon!",
+  "Soap bubbles love clean hands!",
+  "Try time is brave time!",
+];
+
 let audioContext;
 
 function getAudioContext() {
@@ -180,6 +198,20 @@ function sound(effect) {
     tone(1046, 0.2, "sine", 0.045, 0.4);
     return;
   }
+  if (effect === "giggle") {
+    tone(620, 0.07, "square", 0.035, 0);
+    tone(760, 0.06, "square", 0.03, 0.08);
+    tone(680, 0.07, "square", 0.03, 0.16);
+    tone(860, 0.08, "triangle", 0.035, 0.25);
+    return;
+  }
+  if (effect === "dance") {
+    tone(392, 0.11, "triangle", 0.045, 0);
+    tone(494, 0.11, "triangle", 0.045, 0.12);
+    tone(587, 0.11, "triangle", 0.045, 0.24);
+    tone(784, 0.16, "triangle", 0.045, 0.36);
+    return;
+  }
   tone(520, 0.08, "triangle", 0.04, 0);
 }
 
@@ -251,6 +283,20 @@ function BathroomScene({ waterOn, showerOn, signal }) {
   );
 }
 
+function BubbleBuddy({ mood, onClick }) {
+  return React.createElement("button", {
+    className: `bubble-buddy ${mood}`,
+    type: "button",
+    "aria-label": "Bubble Buddy",
+    onClick,
+  },
+    React.createElement("span", { className: "buddy-eye left" }),
+    React.createElement("span", { className: "buddy-eye right" }),
+    React.createElement("span", { className: "buddy-smile" }),
+    React.createElement("span", { className: "buddy-shine" })
+  );
+}
+
 function Game() {
   const saved = loadProgress();
   const [activity, setActivity] = useState("map");
@@ -265,6 +311,10 @@ function Game() {
   const [timerRunning, setTimerRunning] = useState(false);
   const [sparkles, setSparkles] = useState([]);
   const [showReward, setShowReward] = useState(false);
+  const [missionIndex, setMissionIndex] = useState(saved.missionIndex || 0);
+  const [roomMagic, setRoomMagic] = useState(saved.roomMagic || 0);
+  const [party, setParty] = useState("");
+  const [buddyMood, setBuddyMood] = useState("hello");
 
   const copy = ACTIVITIES[activity];
   const unlocked = Math.min(STICKERS.length, Math.floor(stars / 2));
@@ -272,8 +322,8 @@ function Game() {
   const showerOn = activity === "shower" && done.includes("water");
 
   useEffect(() => {
-    localStorage.setItem("sidra-potty-game", JSON.stringify({ stars, stickers }));
-  }, [stars, stickers]);
+    localStorage.setItem("sidra-potty-game", JSON.stringify({ stars, stickers, missionIndex, roomMagic }));
+  }, [stars, stickers, missionIndex, roomMagic]);
 
   useEffect(() => {
     const loadVoices = () => window.speechSynthesis?.getVoices();
@@ -316,6 +366,30 @@ function Game() {
     window.setTimeout(() => setSparkles([]), 900);
   }
 
+  function playfulPop(text = BUDDY_LINES[Math.floor(Math.random() * BUDDY_LINES.length)], effect = "giggle") {
+    setMessage(text);
+    setBuddyMood("excited");
+    setParty("party");
+    setRoomMagic((current) => Math.min(10, current + 1));
+    sparkle();
+    if (soundOn) {
+      sound(effect);
+      speak(text);
+    }
+    window.setTimeout(() => setBuddyMood("hello"), 900);
+    window.setTimeout(() => setParty(""), 1200);
+  }
+
+  function celebrateTiny(effect = "pop") {
+    setBuddyMood("excited");
+    setParty("party");
+    setRoomMagic((current) => Math.min(10, current + 1));
+    sparkle();
+    if (soundOn) sound(effect);
+    window.setTimeout(() => setBuddyMood("hello"), 700);
+    window.setTimeout(() => setParty(""), 850);
+  }
+
   function reward(text, stickerId) {
     const phrase = PRAISE[Math.floor(Math.random() * PRAISE.length)];
     setStars((current) => current + 1);
@@ -325,10 +399,16 @@ function Game() {
     setMessage(`${phrase} ${text}`);
     setMood("happy");
     setShowReward(true);
+    setRoomMagic((current) => Math.min(10, current + 2));
+    setMissionIndex((current) => (current + 1) % MISSIONS.length);
+    setBuddyMood("excited");
     sparkle();
     if (soundOn) sound("success");
     if (soundOn) speak(`${phrase} ${text}`);
-    window.setTimeout(() => setMood("ready"), 900);
+    window.setTimeout(() => {
+      setMood("ready");
+      setBuddyMood("hello");
+    }, 900);
   }
 
   function addSequence(step) {
@@ -344,7 +424,7 @@ function Game() {
     const next = [...sequence, step.id];
     setSequence(next);
     setMessage(step.label);
-    if (soundOn) sound(step.id === "flush" ? "flush" : step.id === "wash" ? "soap" : "pop");
+    celebrateTiny(step.id === "flush" ? "flush" : step.id === "wash" ? "soap" : "dance");
     if (next.length === ROUTINE.length) reward("You know the bathroom routine!", "star");
     else if (soundOn) speak(step.label);
   }
@@ -361,7 +441,7 @@ function Game() {
     }
     const next = [...done, step];
     setDone(next);
-    if (soundOn) sound(step === "flush" ? "flush" : step === "wash" ? "soap" : "pop");
+    celebrateTiny(step === "flush" ? "flush" : step === "wash" ? "soap" : step === "try" ? "dance" : "giggle");
     if (step === "sit") {
       setMessage("Sit with feet steady. Breathe in, breathe out.");
       if (soundOn) speak("Sit with feet steady. Breathe in, breathe out.");
@@ -384,7 +464,7 @@ function Game() {
     if (done.includes(choice.id)) return;
     const next = [...done, choice.id];
     setDone(next);
-    if (soundOn) sound(choice.id === "flush" ? "flush" : choice.id === "wash" ? "soap" : "pop");
+    celebrateTiny(choice.id === "flush" ? "flush" : choice.id === "wash" ? "soap" : "giggle");
     if (next.length === 3) reward("Wipe, flush, wash. Clean helper!", "wipe");
     else {
       setMessage(choice.label);
@@ -403,9 +483,7 @@ function Game() {
     }
     const next = [...done, step.id];
     setDone(next);
-    if (soundOn) {
-      sound(step.id === "water" || step.id === "rinse" ? (activity === "shower" ? "shower" : "water") : step.id === "soap" ? "soap" : "pop");
-    }
+    celebrateTiny(step.id === "water" || step.id === "rinse" ? (activity === "shower" ? "shower" : "water") : step.id === "soap" ? "soap" : "dance");
     if (next.length === list.length) reward("All clean!", sticker);
     else {
       setMessage(step.label);
@@ -420,6 +498,9 @@ function Game() {
     setSequence([]);
     setShowReward(false);
     setMessage("Fresh start. Practice gently.");
+    setMissionIndex(0);
+    setRoomMagic(0);
+    setParty("");
     localStorage.removeItem("sidra-potty-game");
   }
 
@@ -518,7 +599,7 @@ function Game() {
     return renderMap();
   }, [activity, done, sequence, sitCount, timerRunning]);
 
-  return React.createElement("section", { className: "game", "aria-label": "Sidra bathroom learning game" },
+  return React.createElement("section", { className: `game ${party}`, "aria-label": "Sidra bathroom learning game" },
     React.createElement("div", { className: "bubble one" }),
     React.createElement("div", { className: "bubble two" }),
     React.createElement("div", { className: "bubble three" }),
@@ -536,6 +617,7 @@ function Game() {
       ),
       React.createElement("div", { className: "status" },
         React.createElement("div", { className: "pill stars" }, `${stars} stars`),
+        React.createElement("div", { className: "pill magic-pill" }, `${roomMagic}/10 sparkle`),
         React.createElement("button", {
           className: "sound-button",
           type: "button",
@@ -560,6 +642,13 @@ function Game() {
     React.createElement("main", { className: "stage" },
       React.createElement("aside", { className: "sidra-panel" },
         React.createElement(Kid, { mood }),
+        React.createElement("div", { className: "mission-card" },
+          React.createElement("strong", null, "Mission"),
+          React.createElement("span", null, MISSIONS[missionIndex]),
+          React.createElement("div", { className: "magic-bar", "aria-label": "Sparkle meter" },
+            React.createElement("span", { style: { width: `${roomMagic * 10}%` } })
+          )
+        ),
         React.createElement("div", { className: "prompt", "aria-live": "polite" }, message)
       ),
       React.createElement("section", { className: "play-panel" },
@@ -568,6 +657,10 @@ function Game() {
           React.createElement("p", null, copy.prompt)
         ),
         React.createElement("div", { className: "scene-card" },
+          React.createElement(BubbleBuddy, {
+            mood: buddyMood,
+            onClick: () => playfulPop(),
+          }),
           React.createElement(BathroomScene, {
             waterOn,
             showerOn,
@@ -576,6 +669,9 @@ function Game() {
           content
         ),
         React.createElement("div", { className: "tool-row" },
+          React.createElement("button", { className: "action-button surprise", type: "button", onClick: () => playfulPop("Pop-pop! The clean bubbles are dancing!", "giggle") }, "Bubble Pop"),
+          React.createElement("button", { className: "action-button surprise", type: "button", onClick: () => playfulPop("Whoooosh! Funny flush swirl!", "flush") }, "Funny Flush"),
+          React.createElement("button", { className: "action-button surprise", type: "button", onClick: () => playfulPop("Dance break! Wiggle, wiggle, clean hands!", "dance") }, "Dance"),
           React.createElement("button", { className: "action-button", type: "button", onClick: () => startActivity(activity) }, "New Practice"),
           React.createElement("button", { className: "action-button", type: "button", onClick: resetProgress }, "Fresh Start")
         )
