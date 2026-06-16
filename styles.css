@@ -861,6 +861,228 @@ h1 {
   .kid { width: min(38vw, 300px); }
 }
 
+@media (min-width: 721px) and (max-width: 1050px) {
+  body {
+    overflow: hidden;
+  }
+
+  .game {
+    height: 100svh;
+    overflow: hidden;
+    padding: max(8px, env(safe-area-inset-top)) 10px max(8px, env(safe-area-inset-bottom));
+  }
+
+  .topbar {
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  }
+
+  .subtitle {
+    font-size: 0.92rem;
+  }
+
+  .pill,
+  .sound-button,
+  .action-button {
+    min-height: 38px;
+    padding: 7px 11px;
+    font-size: 0.86rem;
+  }
+
+  .activity-tabs {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 7px;
+    margin-bottom: 8px;
+  }
+
+  .activity-tab {
+    min-height: 58px;
+    padding: 7px 8px;
+    border-radius: 16px;
+    box-shadow: 0 5px 0 var(--shadow);
+  }
+
+  .activity-tab.active {
+    box-shadow: 0 3px 0 var(--shadow);
+  }
+
+  .activity-tab strong {
+    font-size: 0.82rem;
+  }
+
+  .activity-tab span {
+    font-size: 0.68rem;
+  }
+
+  .stage {
+    grid-template-columns: minmax(180px, 0.62fr) minmax(300px, 1.08fr) minmax(160px, 0.5fr);
+    gap: 9px;
+    min-height: calc(100svh - 128px);
+  }
+
+  .sidra-panel,
+  .play-panel,
+  .reward-panel {
+    min-height: 0;
+  }
+
+  .sidra-panel {
+    gap: 8px;
+  }
+
+  .kid {
+    width: min(23vw, 210px);
+    min-width: 155px;
+  }
+
+  .prompt {
+    min-height: 54px;
+    padding: 9px 10px;
+    border-radius: 18px;
+    font-size: 0.88rem;
+  }
+
+  .play-panel {
+    gap: 8px;
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .activity-title h2 {
+    font-size: 1.5rem;
+  }
+
+  .activity-title p {
+    font-size: 0.86rem;
+  }
+
+  .scene-card {
+    min-height: 268px;
+    padding: 9px;
+    border-radius: 20px;
+  }
+
+  .bathroom-scene {
+    min-height: 222px;
+    border-radius: 17px;
+  }
+
+  .commode {
+    transform: scale(0.72);
+    transform-origin: left bottom;
+  }
+
+  .sink {
+    transform: scale(0.68);
+    transform-origin: right bottom;
+  }
+
+  .shower {
+    transform: scale(0.68);
+    transform-origin: right top;
+  }
+
+  .potty-signal {
+    left: 34%;
+    top: 31%;
+    width: 108px;
+    min-height: 58px;
+    padding: 7px;
+    border-radius: 18px;
+    font-size: 0.8rem;
+  }
+
+  .tool-row,
+  .choices,
+  .step-grid {
+    gap: 7px;
+  }
+
+  .tool,
+  .choice,
+  .step-card {
+    min-width: 82px;
+    min-height: 76px;
+    padding: 7px;
+    border-radius: 16px;
+    font-size: 0.72rem;
+  }
+
+  .icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 3px;
+  }
+
+  .icon.shower-icon::after {
+    left: 7px;
+    top: 30px;
+    width: 6px;
+    height: 16px;
+    box-shadow: 10px 0 #6bd9ff, 20px 0 #6bd9ff;
+  }
+
+  .routine-track {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+    min-height: 68px;
+    padding: 7px;
+    border-radius: 16px;
+  }
+
+  .slot {
+    min-height: 52px;
+    border-width: 3px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+  }
+
+  .sit-practice {
+    min-height: 205px;
+    gap: 8px;
+  }
+
+  .timer-ring {
+    width: min(23vw, 145px);
+  }
+
+  .timer-button {
+    min-width: 128px;
+    min-height: 44px;
+    font-size: 0.84rem;
+  }
+
+  .reward-panel {
+    grid-column: auto;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .reward-panel h2 {
+    font-size: 1rem;
+  }
+
+  .sticker-shelf {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .sticker {
+    min-height: 61px;
+    border-radius: 14px;
+    font-size: 0.72rem;
+  }
+
+  .badge {
+    width: 30px;
+    height: 30px;
+  }
+}
+
 @media (max-width: 720px) {
   .topbar {
     align-items: flex-start;
